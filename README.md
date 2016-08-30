@@ -1,8 +1,8 @@
 # EndpointRanges
 
-[![Build Status](https://travis-ci.org/timholy/EndpointRanges.jl.svg?branch=master)](https://travis-ci.org/timholy/EndpointRanges.jl)
+[![Build Status](https://travis-ci.org/JuliaArrays/EndpointRanges.jl.svg?branch=master)](https://travis-ci.org/JuliaArrays/EndpointRanges.jl)
 
-[![codecov.io](http://codecov.io/github/timholy/EndpointRanges.jl/coverage.svg?branch=master)](http://codecov.io/github/timholy/EndpointRanges.jl?branch=master)
+[![codecov.io](http://codecov.io/github/JuliaArrays/EndpointRanges.jl/coverage.svg?branch=master)](http://codecov.io/github/JuliaArrays/EndpointRanges.jl?branch=master)
 
 This Julia package makes it easier to index "unconventional" arrays
 (ones for which indexing does not necessarily start at 1), by defining
