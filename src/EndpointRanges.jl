@@ -73,11 +73,12 @@ function Base.getindex(r::LinSpace, s::EndpointRange)
     getindex(r, newindex(indices1(r), s))
 end
 
-# @inline function Base._getindex{T,N}(l::IndexLinear, A::AbstractArray{T,N}, I::Vararg{Union{Real, AbstractArray, Colon, EndpointRange},N})
-#     Base._getindex(l, A, newindices(indices(A), I)...)
-# end
 
 if VERSION < v"0.6.0-dev.1932"
+    @inline function Base._getindex{T,N}(l::Base.LinearIndexing, A::AbstractArray{T,N}, I::Vararg{Union{Real, AbstractArray, Colon, EndpointRange},N})
+        Base._getindex(l, A, newindices(indices(A), I)...)
+    end
+
     @inline function Base.view{T,N}(A::AbstractArray{T,N}, I::Vararg{Union{ViewIndex,EndpointRange},N})
         view(A, newindices(indices(A), I)...)
     end
