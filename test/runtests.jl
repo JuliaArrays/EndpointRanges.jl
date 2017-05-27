@@ -28,3 +28,6 @@ for a in (1:20,
     @test view(a, 1:(ibegin+iend)÷2) == view(a, 1:10)
     @test view(a, ibegin+2:iend-3) == view(a, 3:17)
 end
+
+A = reshape(1:12, (3, 4))
+@test A[ibegin:2, 2:iend] == A[1:2, 2:4]

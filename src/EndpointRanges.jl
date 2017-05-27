@@ -1,11 +1,13 @@
 module EndpointRanges
 
+using Compat
+
 import Base: +, -, *, /, ÷, %
-using Base: LinearIndexing, ViewIndex, tail, indices1
+using Base: ViewIndex, tail, indices1
 
 export ibegin, iend
 
-abstract Endpoint
+@compat abstract type Endpoint end
 immutable IBegin <: Endpoint end
 immutable IEnd   <: Endpoint end
 const ibegin = IBegin()
@@ -31,7 +33,7 @@ for op in (:+, :-, :*, :/, :÷, :%)
 end
 
 # deliberately not <: AbstractUnitRange{Int}
-abstract EndpointRange{T}
+@compat abstract type EndpointRange{T} end
 immutable EndpointUnitRange{F<:Union{Int,Endpoint},L<:Union{Int,Endpoint}} <: EndpointRange{Int}
     start::F
     stop::L
@@ -57,20 +59,32 @@ function Base.getindex(r::StepRange, s::EndpointRange)
     getindex(r, newindex(indices1(r), s))
 end
 
-function Base.getindex(r::FloatRange, s::EndpointRange)
-    getindex(r, newindex(indices1(r), s))
+if VERSION < v"0.6.0-dev.2376"
+    function Base.getindex(r::FloatRange, s::EndpointRange)
+        getindex(r, newindex(indices1(r), s))
+    end
+else
+    function Base.getindex(r::StepRangeLen, s::EndpointRange)
+        getindex(r, newindex(indices1(r), s))
+    end
 end
 
 function Base.getindex(r::LinSpace, s::EndpointRange)
     getindex(r, newindex(indices1(r), s))
 end
 
-@inline function Base._getindex{T,N}(l::LinearIndexing, A::AbstractArray{T,N}, I::Vararg{Union{Real, AbstractArray, Colon, EndpointRange},N})
-    Base._getindex(l, A, newindices(indices(A), I)...)
-end
+# @inline function Base._getindex{T,N}(l::IndexLinear, A::AbstractArray{T,N}, I::Vararg{Union{Real, AbstractArray, Colon, EndpointRange},N})
+#     Base._getindex(l, A, newindices(indices(A), I)...)
+# end
 
-@inline function Base.view{T,N}(A::AbstractArray{T,N}, I::Vararg{Union{ViewIndex,EndpointRange},N})
-    view(A, newindices(indices(A), I)...)
+if VERSION < v"0.6.0-dev.1932"
+    @inline function Base.view{T,N}(A::AbstractArray{T,N}, I::Vararg{Union{ViewIndex,EndpointRange},N})
+        view(A, newindices(indices(A), I)...)
+    end
+else
+    @inline function Base.to_indices(A, inds, I::Tuple{EndpointRange, Vararg{Any}})
+        (newindex(inds[1], I[1]), to_indices(A, Base._maybetail(inds), Base.tail(I))...)
+    end
 end
 
 @inline newindices(indsA, inds) = (newindex(indsA[1], inds[1]), newindices(tail(indsA), tail(inds))...)
