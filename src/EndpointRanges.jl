@@ -15,13 +15,13 @@ const iend   = IEnd()
 
 (::IBegin)(b::Integer, e::Integer) = b
 (::IEnd  )(b::Integer, e::Integer) = e
-(::IBegin)(r::Range) = first(r)
-(::IEnd  )(r::Range) = last(r)
+(::IBegin)(r::AbstractRange) = first(r)
+(::IEnd  )(r::AbstractRange) = last(r)
 
 struct IndexFunction{F<:Function} <: Endpoint
     index::F
 end
-(f::IndexFunction)(r::Range) = f.index(r)
+(f::IndexFunction)(r::AbstractRange) = f.index(r)
 
 for op in (:+, :-)
     @eval $op(x::Endpoint) = IndexFunction(r->x(r))
@@ -39,9 +39,9 @@ struct EndpointUnitRange{F<:Union{Int,Endpoint},L<:Union{Int,Endpoint}} <: Endpo
     stop::L
 end
 
-(r::EndpointUnitRange)(s::Range) = r.start(s):r.stop(s)
-(r::EndpointUnitRange{Int,E})(s::Range) where {E<:Endpoint} = r.start:r.stop(s)
-(r::EndpointUnitRange{E,Int})(s::Range) where {E<:Endpoint} = r.start(s):r.stop
+(r::EndpointUnitRange)(s::AbstractRange) = r.start(s):r.stop(s)
+(r::EndpointUnitRange{Int,E})(s::AbstractRange) where {E<:Endpoint} = r.start:r.stop(s)
+(r::EndpointUnitRange{E,Int})(s::AbstractRange) where {E<:Endpoint} = r.start(s):r.stop
 
 Base.colon(start::Endpoint, stop::Endpoint) = EndpointUnitRange(start, stop)
 Base.colon(start::Endpoint, stop::Int) = EndpointUnitRange(start, stop)
