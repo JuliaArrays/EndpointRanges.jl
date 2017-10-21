@@ -31,3 +31,8 @@ end
 
 A = reshape(1:12, (3, 4))
 @test A[ibegin:2, 2:iend] == A[1:2, 2:4]
+
+# issue #8
+a = 1:9
+@test a[ibegin] == 1
+@test a[iend] == 9

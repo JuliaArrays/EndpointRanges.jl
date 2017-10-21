@@ -68,7 +68,7 @@ function Base.getindex(r::LinSpace, s::EndpointRange)
 end
 
 
-@inline function Base.to_indices(A, inds, I::Tuple{EndpointRange, Vararg{Any}})
+@inline function Base.to_indices(A, inds, I::Tuple{Union{Endpoint, EndpointRange}, Vararg{Any}})
     (newindex(inds[1], I[1]), to_indices(A, Base._maybetail(inds), Base.tail(I))...)
 end
 
@@ -77,5 +77,7 @@ newindices(::Tuple{}, ::Tuple{}) = ()
 
 newindex(indA, i::Union{Real, AbstractArray, Colon}) = i
 newindex(indA, i::EndpointRange) = i(indA)
+newindex(indA, i::IBegin) = first(indA)
+newindex(indA, i::IEnd)   = last(indA)
 
 end # module
