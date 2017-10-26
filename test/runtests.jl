@@ -36,3 +36,5 @@ A = reshape(1:12, (3, 4))
 a = 1:9
 @test a[ibegin] == 1
 @test a[iend] == 9
+# issue #10
+@test a[ibegin:3:iend] == 1:3:7
