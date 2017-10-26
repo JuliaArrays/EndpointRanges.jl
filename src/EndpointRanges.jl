@@ -38,14 +38,27 @@ struct EndpointUnitRange{F<:Union{Int,Endpoint},L<:Union{Int,Endpoint}} <: Endpo
     start::F
     stop::L
 end
+struct EndpointStepRange{F<:Union{Int,Endpoint},L<:Union{Int,Endpoint}} <: EndpointRange{Int}
+    start::F
+    step::Int
+    stop::L
+end
 
 (r::EndpointUnitRange)(s::AbstractRange) = r.start(s):r.stop(s)
 (r::EndpointUnitRange{Int,E})(s::AbstractRange) where {E<:Endpoint} = r.start:r.stop(s)
 (r::EndpointUnitRange{E,Int})(s::AbstractRange) where {E<:Endpoint} = r.start(s):r.stop
 
+(r::EndpointStepRange)(s::AbstractRange) = r.start(s):r.step:r.stop(s)
+(r::EndpointStepRange{Int,E})(s::AbstractRange) where {E<:Endpoint} = r.start:r.step:r.stop(s)
+(r::EndpointStepRange{E,Int})(s::AbstractRange) where {E<:Endpoint} = r.start(s):r.step:r.stop
+
 Base.colon(start::Endpoint, stop::Endpoint) = EndpointUnitRange(start, stop)
 Base.colon(start::Endpoint, stop::Int) = EndpointUnitRange(start, stop)
 Base.colon(start::Int, stop::Endpoint) = EndpointUnitRange(start, stop)
+
+Base.colon(start::Endpoint, step::Int, stop::Endpoint) = EndpointStepRange(start, step, stop)
+Base.colon(start::Endpoint, step::Int, stop::Int) = EndpointStepRange(start, step, stop)
+Base.colon(start::Int, step::Int, stop::Endpoint) = EndpointStepRange(start, step, stop)
 
 function Base.getindex(r::UnitRange, s::EndpointRange)
     getindex(r, newindex(indices1(r), s))
