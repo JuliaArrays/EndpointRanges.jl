@@ -1,5 +1,5 @@
 using EndpointRanges
-using Base.Test
+using Test
 
 r1 = -3:7
 r2 = 2:5
@@ -14,9 +14,9 @@ r2 = 2:5
 @test (iend-2)(r2) == 3
 
 for a in (1:20,
-          range(1,2,20),      # StepRange
-          1.0:2.0:39.0,       # FloatRange
-          linspace(1,100,20), # LinSpace
+          range(1,step=2,length=20),
+          1.0:2.0:39.0,
+          range(1,stop=100,length=20),
           collect(1:20),
           view(0:21, 2:21))
     @test a[ibegin:20] == a[1:20]
