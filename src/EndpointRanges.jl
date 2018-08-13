@@ -1,9 +1,7 @@
 module EndpointRanges
 
-using Compat
-
 import Base: +, -, *, /, ÷, %
-using Base: ViewIndex, tail, indices1
+using Base: ViewIndex, tail, axes1
 
 export ibegin, iend
 
@@ -52,32 +50,32 @@ end
 (r::EndpointStepRange{Int,E})(s::AbstractRange) where {E<:Endpoint} = r.start:r.step:r.stop(s)
 (r::EndpointStepRange{E,Int})(s::AbstractRange) where {E<:Endpoint} = r.start(s):r.step:r.stop
 
-Base.colon(start::Endpoint, stop::Endpoint) = EndpointUnitRange(start, stop)
-Base.colon(start::Endpoint, stop::Int) = EndpointUnitRange(start, stop)
-Base.colon(start::Int, stop::Endpoint) = EndpointUnitRange(start, stop)
+(::Colon)(start::Endpoint, stop::Endpoint) = EndpointUnitRange(start, stop)
+(::Colon)(start::Endpoint, stop::Int) = EndpointUnitRange(start, stop)
+(::Colon)(start::Int, stop::Endpoint) = EndpointUnitRange(start, stop)
 
-Base.colon(start::Endpoint, step::Int, stop::Endpoint) = EndpointStepRange(start, step, stop)
-Base.colon(start::Endpoint, step::Int, stop::Int) = EndpointStepRange(start, step, stop)
-Base.colon(start::Int, step::Int, stop::Endpoint) = EndpointStepRange(start, step, stop)
+(::Colon)(start::Endpoint, step::Int, stop::Endpoint) = EndpointStepRange(start, step, stop)
+(::Colon)(start::Endpoint, step::Int, stop::Int) = EndpointStepRange(start, step, stop)
+(::Colon)(start::Int, step::Int, stop::Endpoint) = EndpointStepRange(start, step, stop)
 
 function Base.getindex(r::UnitRange, s::EndpointRange)
-    getindex(r, newindex(indices1(r), s))
+    getindex(r, newindex(axes1(r), s))
 end
 
 function Base.getindex(r::AbstractUnitRange, s::EndpointRange)
-    getindex(r, newindex(indices1(r), s))
+    getindex(r, newindex(axes1(r), s))
 end
 
 function Base.getindex(r::StepRange, s::EndpointRange)
-    getindex(r, newindex(indices1(r), s))
+    getindex(r, newindex(axes1(r), s))
 end
 
 function Base.getindex(r::StepRangeLen, s::EndpointRange)
-    getindex(r, newindex(indices1(r), s))
+    getindex(r, newindex(axes1(r), s))
 end
 
-function Base.getindex(r::LinSpace, s::EndpointRange)
-    getindex(r, newindex(indices1(r), s))
+function Base.getindex(r::LinRange, s::EndpointRange)
+    getindex(r, newindex(axes1(r), s))
 end
 
 
