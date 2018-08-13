@@ -90,5 +90,6 @@ newindex(indA, i::Union{Real, AbstractArray, Colon}) = i
 newindex(indA, i::EndpointRange) = i(indA)
 newindex(indA, i::IBegin) = first(indA)
 newindex(indA, i::IEnd)   = last(indA)
+newindex(indA, i::Endpoint) = i(indA)
 
 end # module
