@@ -1,4 +1,4 @@
-This funcionality is now in Julia, as of Julia 1.4, while syntax is slightly different.
+This functionality is now in Julia, as of Julia 1.4, while syntax is slightly different.
 
 # EndpointRanges
 
