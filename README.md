@@ -1,4 +1,4 @@
-This functionality is now in Julia, as of Julia 1.4, while syntax is slightly different.
+The functionality of this package is now (partially, i.e. for the first usage example, but not for views) in Julia, as of Julia 1.4, while syntax is slightly different.
 
 # EndpointRanges
 
