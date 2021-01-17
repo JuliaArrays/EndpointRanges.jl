@@ -1,0 +1,12 @@
+name = "EndpointRanges"
+uuid = "340492b5-2a47-5f55-813d-aca7ddf97656"
+version = "0.2.1"
+
+[compat]
+julia = "0.7, 1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
