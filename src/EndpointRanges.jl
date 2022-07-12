@@ -80,7 +80,7 @@ end
 
 
 @inline function Base.to_indices(A, inds, I::Tuple{Union{Endpoint, EndpointRange}, Vararg{Any}})
-    (newindex(inds[1], I[1]), to_indices(A, Base._maybetail(inds), Base.tail(I))...)
+    (newindex(inds[1], I[1]), to_indices(A, _maybetail(inds), Base.tail(I))...)
 end
 
 @inline newindices(indsA, inds) = (newindex(indsA[1], inds[1]), newindices(tail(indsA), tail(inds))...)
@@ -91,5 +91,8 @@ newindex(indA, i::EndpointRange) = i(indA)
 newindex(indA, i::IBegin) = first(indA)
 newindex(indA, i::IEnd)   = last(indA)
 newindex(indA, i::Endpoint) = i(indA)
+
+_maybetail(::Tuple{}) = ()
+_maybetail(t::Tuple) = Base.tail(t)
 
 end # module
