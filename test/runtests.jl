@@ -55,3 +55,12 @@ end
     @test A[3,iend-1]   == 15
     @test A[ibegin+1,iend-1] == 14
 end
+
+@testset "String" begin
+    # issue #22
+    s = "Hello, World"
+    @test s[ibegin] == s[begin]
+    @test s[iend-3] == s[end-3]
+    @test s[1:iend] == s[1:end]
+    @test s[2*ibegin+1:iend÷2] == s[2*begin+1:end÷2]
+end

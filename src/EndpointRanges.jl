@@ -16,10 +16,13 @@ const iend   = IEnd()
 (::IBegin)(r::AbstractRange) = first(r)
 (::IEnd  )(r::AbstractRange) = last(r)
 
+(::IBegin)(r::AbstractString) = firstindex(r)
+(::IEnd  )(r::AbstractString) = lastindex(r)
+
 struct IndexFunction{F<:Function} <: Endpoint
     index::F
 end
-(f::IndexFunction)(r::AbstractRange) = f.index(r)
+(f::IndexFunction)(r::Union{AbstractString,AbstractRange}) = f.index(r)
 
 for op in (:+, :-)
     @eval $op(x::Endpoint) = IndexFunction(r->x(r))
@@ -42,13 +45,13 @@ struct EndpointStepRange{F<:Union{Int,Endpoint},L<:Union{Int,Endpoint}} <: Endpo
     stop::L
 end
 
-(r::EndpointUnitRange)(s::AbstractRange) = r.start(s):r.stop(s)
-(r::EndpointUnitRange{Int,E})(s::AbstractRange) where {E<:Endpoint} = r.start:r.stop(s)
-(r::EndpointUnitRange{E,Int})(s::AbstractRange) where {E<:Endpoint} = r.start(s):r.stop
+(r::EndpointUnitRange)(s::Union{AbstractString,AbstractRange}) = r.start(s):r.stop(s)
+(r::EndpointUnitRange{Int,E})(s::Union{AbstractString,AbstractRange}) where {E<:Endpoint} = r.start:r.stop(s)
+(r::EndpointUnitRange{E,Int})(s::Union{AbstractString,AbstractRange}) where {E<:Endpoint} = r.start(s):r.stop
 
-(r::EndpointStepRange)(s::AbstractRange) = r.start(s):r.step:r.stop(s)
-(r::EndpointStepRange{Int,E})(s::AbstractRange) where {E<:Endpoint} = r.start:r.step:r.stop(s)
-(r::EndpointStepRange{E,Int})(s::AbstractRange) where {E<:Endpoint} = r.start(s):r.step:r.stop
+(r::EndpointStepRange)(s::Union{AbstractString,AbstractRange}) = r.start(s):r.step:r.stop(s)
+(r::EndpointStepRange{Int,E})(s::Union{AbstractString,AbstractRange}) where {E<:Endpoint} = r.start:r.step:r.stop(s)
+(r::EndpointStepRange{E,Int})(s::Union{AbstractString,AbstractRange}) where {E<:Endpoint} = r.start(s):r.step:r.stop
 
 (::Colon)(start::Endpoint, stop::Endpoint) = EndpointUnitRange(start, stop)
 (::Colon)(start::Endpoint, stop::Int) = EndpointUnitRange(start, stop)
@@ -78,6 +81,10 @@ function Base.getindex(r::LinRange, s::EndpointRange)
     getindex(r, newindex(axes1(r), s))
 end
 
+function Base.getindex(s::AbstractString, i::Union{Endpoint,EndpointRange})
+    return getindex(s,newindex(s,i))
+end
+
 
 @inline function Base.to_indices(A, inds, I::Tuple{Union{Endpoint, EndpointRange}, Vararg{Any}})
     (newindex(inds[1], I[1]), to_indices(A, inds[2:end], Base.tail(I))...)
@@ -88,8 +95,8 @@ newindices(::Tuple{}, ::Tuple{}) = ()
 
 newindex(indA, i::Union{Real, AbstractArray, Colon}) = i
 newindex(indA, i::EndpointRange) = i(indA)
-newindex(indA, i::IBegin) = first(indA)
-newindex(indA, i::IEnd)   = last(indA)
+# newindex(indA, i::IBegin) = first(indA)
+# newindex(indA, i::IEnd)   = last(indA)
 newindex(indA, i::Endpoint) = i(indA)
 
 end # module
